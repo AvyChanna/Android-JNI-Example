@@ -1,0 +1,5 @@
+<resources>
+	<string name="app_name">JNI Example</string>
+	<string name="callback_success">Callback Received</string>
+	<string name="callback_waiting">Waiting for callback</string>
+</resources>
