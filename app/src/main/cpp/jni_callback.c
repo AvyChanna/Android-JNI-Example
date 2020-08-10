@@ -6,6 +6,17 @@
 #include <string.h> // memset
 #include <unistd.h> // sleep
 
+// ********** Utils **********
+#define STR(str) #str
+#define ESTR(str) STR(str)
+
+#define __PACKAGE_ID com_example_jniexample
+#define PACKAGE_ID ESTR(__PACKAGE_ID)
+
+#define FUNC(activity, function) __FUNC(__PACKAGE_ID, activity, function)
+#define __FUNC(package, activity, function) __FUNC_IMPL(package, activity, function)
+#define __FUNC_IMPL(package, activity, function) \
+                    JNICALL Java_ ## package ## _ ## activity ## _ ## function
 
 // ********** Logging **********
 #include <android/log.h>
@@ -27,11 +38,9 @@ static unsigned int time_to_sleep = 3;
 // ********** Function Declarations **********
 void *startCallback();
 
-JNIEXPORT void JNICALL
-Java_com_example_jniexample_MainActivity_registerCallback(JNIEnv *env, jobject instance);
+JNIEXPORT void FUNC(MainActivity, registerCallback)(JNIEnv *env, jobject instance);
 
-JNIEXPORT void JNICALL
-Java_com_example_jniexample_MainActivity_deregisterCallback(JNIEnv *env, jobject ignored);
+JNIEXPORT void FUNC(MainActivity, deregisterCallback)(JNIEnv *env, jobject ignored);
 
 // ********** Function Definitions **********
 void *startCallback() {
@@ -52,9 +61,7 @@ void *startCallback() {
     return NULL;
 }
 
-void
-Java_com_example_jniexample_MainActivity_registerCallback(
-        JNIEnv *env, jobject instance) {
+void FUNC(MainActivity, registerCallback)(JNIEnv *env, jobject instance) {
     LOG("Registering callback");
     pthread_t threadInfo_;
     pthread_attr_t threadAttr_;
@@ -71,8 +78,7 @@ Java_com_example_jniexample_MainActivity_registerCallback(
     pthread_attr_destroy(&threadAttr_);
 }
 
-void Java_com_example_jniexample_MainActivity_deregisterCallback(
-        JNIEnv *env, jobject ignored) {
+void FUNC(MainActivity, deregisterCallback)(JNIEnv *env, jobject ignored) {
     (*env)->DeleteGlobalRef(env, gVar.clazz);
     (*env)->DeleteGlobalRef(env, gVar.object);
     gVar.object = NULL;
